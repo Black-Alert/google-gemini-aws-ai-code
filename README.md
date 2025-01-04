@@ -37,7 +37,7 @@ Black Alert is a serverless chat system that leverages Google's Gemini AI API th
 ### Local Development Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/black-alert-gemini-demo.git
+   git clone https://github.com/Black-Alert/google-gemini-aws-ai-code.git
    cd black-alert-gemini-demo
    ```
 
