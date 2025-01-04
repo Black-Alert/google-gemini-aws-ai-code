@@ -1,0 +1,9 @@
+.venv
+/.venv
+*xml
+*.iml
+.idea
+/.idea
+.codiumai
+/infra
+.infra
