@@ -1,3 +1,4 @@
+import json
 import asyncio
 import os
 from google import genai
@@ -13,17 +14,52 @@ async def process_chat(message: str) -> str:
 
 def lambda_handler(event, context):
     print(event)
-    body = event.get('body', {})
-    message = body['message']
-    print(message)
-    response_text = asyncio.run(process_chat(message))
-    return {
-        'statusCode': 200,
-        'body': response_text,
-        'headers': {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type'
+
+    try:
+        # Parse the body as JSON
+        body = json.loads(event.get('body', '{}'))
+        message = body.get('message', '')
+
+        if not message:
+            raise ValueError("Message not found in the request body.")
+
+        print(message)
+
+        # Process the chat message
+        response_text = asyncio.run(process_chat(message))
+
+        return {
+            'statusCode': 200,
+            'body': json.dumps({'response': response_text}),
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type'
+            }
         }
-    }
+
+    except (json.JSONDecodeError, ValueError) as e:
+        # Handle JSON parsing errors or missing 'message' key
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'error': str(e)}),
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type'
+            }
+        }
+    except Exception as e:
+        # Handle other unexpected errors
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'error': 'Internal server error', 'details': str(e)}),
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type'
+            }
+        }
