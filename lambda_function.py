@@ -12,7 +12,10 @@ async def process_chat(message: str) -> str:
 
 
 def lambda_handler(event, context):
-    message = event.get('message', 'Hello')
+    print(event)
+    body = event.get('body', {})
+    message = body['message']
+    print(message)
     response_text = asyncio.run(process_chat(message))
     return {
         'statusCode': 200,
