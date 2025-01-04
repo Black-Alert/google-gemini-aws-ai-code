@@ -1,8 +1,6 @@
 import asyncio
 import os
-
 from google import genai
-
 
 client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'), http_options={'api_version': 'v1alpha'})
 
@@ -26,12 +24,3 @@ def lambda_handler(event, context):
             'Access-Control-Allow-Headers': 'Content-Type'
         }
     }
-
-
-if __name__ == "__main__":
-    test_event = {
-        'message': 'Tell me about our solar system!'
-    }
-    test_context = {}  # You can add more context information if needed
-    result = lambda_handler(test_event, test_context)
-    print(result['body'])
